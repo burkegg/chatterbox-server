@@ -57,14 +57,17 @@ var requestHandler = function(request, response) {
     console.log('posted data: ', Object.keys(request.socket));
     // console.log('headers: ', request.headers);
     // console.log('url ', request.url);
+    let body = [];
     req.on('data', (chunk) => {
-      var json = chunk.toString();
-      data.results.push(JSON.parse(json));
+      body.push(chunk);
+    }).on('end', () => {
+      body = Buffer.concat(body).toString();
+      body = JSON.parse(body);
+      data.results.push(body);
     });
-    response.end(JSON.stringify(data));
   };
   var optionMethod = function() {
-    response.end();
+    response.end(JSON.stringify({'a': 1}));
   };
   var action = {
     'GET': getMethod,
